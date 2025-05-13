@@ -68,20 +68,15 @@ export default function TravelServices() {
         }}
       />
       
-      {/* Subtle dark overlay */}
-      <div className="absolute inset-0 z-1 bg-opacity-40"></div>
+      <div className="absolute inset-0 z-1 bg-black/40"></div>
 
-      {/* Content Container */}
       <div className="relative z-10 container max-w-[90%] mx-auto px-4 py-16 md:py-24">
         <div className="flex flex-col md:flex-row gap-8 md:gap-16 items-start">
-          {/* Left Column - Text and CTA */}
           <div className="w-full md:w-1/2 space-y-6">
-            {/* Play Button with pulse effect */}
             <div className="flex items-center gap-4">
               <button className="relative rounded-full p-4 bg-opacity-90 transition-transform hover:scale-110 group" 
                 style={{ backgroundColor: primaryColor }}>
                 <Play className="w-8 h-8 text-white" fill="white" />
-                {/* Pulse Animation */}
                 <span className="absolute inset-0 rounded-full border-2 border-white opacity-75 animate-ping"></span>
               </button>
               <div className="h-12 w-12 rotate-90 md:rotate-0">
@@ -123,7 +118,6 @@ export default function TravelServices() {
           <div className="w-full md:w-1/2 grid grid-cols-1 sm:grid-cols-2 gap-2 mt-8 md:mt-0">
             {services.map((service) => {
               const isHovered = hoveredCard === service.id;
-              
               return (
                 <div
                   key={service.id}

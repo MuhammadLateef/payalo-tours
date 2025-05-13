@@ -5,6 +5,7 @@ import React from "react"
 import { useEffect, useRef, useState } from "react"
 import { useInView } from "react-intersection-observer"
 import { Tent, Users, Star, Award } from "lucide-react"
+import AchievementsReview from "./testimonial-slider"
 
 const Achievement = ({ value, suffix, label, icon }) => {
   const [count, setCount] = useState(0)
@@ -49,9 +50,9 @@ const Achievement = ({ value, suffix, label, icon }) => {
   }, [inView, value])
 
   return (
-    <div ref={ref} className="group relative  bg-white hover:bg-gradient-to-r hover:from-red-500 hover:via-yellow-500 hover:to-blue-500  rounded-lg p-6 shadow-sm transition-transform hover:scale-105 hover:shadow-md">
+    <div ref={ref} className="group transition-all duration-300 group hover:shadow-lg relative max-w-[380px] px-[15px] pt-[40px] pb-[30px] shadow-[15px_30px_86px_0px_rgba(0,0,0,0.07)] text-center rounded-[10px] bg-white mb-[30px]">
       <div className="flex flex-col items-center text-center">
-        <div className="w-24 h-24 rounded-full bg-green-100 flex items-center justify-center mb-4 ">{icon}</div>
+        <div className="w-24 h-24 rounded-full bg-green-100 group-hover:bg-amber-200 group-hover:text-amber-200 flex items-center justify-center mb-4 ">{icon}</div>
         <h3 className="text-4xl font-bold text-gray-800 mb-2">
           {count}
           {suffix}
@@ -91,25 +92,32 @@ export default function AchievementsSection() {
   ]
 
   return (
-    <section className="mb-16 max-w-7xl mx-auto my-32">
-      <div className="relative mb-10">
-        <div className="absolute -top-4 left-90 transform rotate-[-5deg]">
-          <div className="bg-orange-400 text-white px-4 py-1 text-sm font-medium">Company Fact</div>
+    <>
+      <section className="mb-16 max-w-7xl relative z-10 mx-auto my-32">
+        <div className="relative mb-10">
+          <div className="absolute -top-4 left-90 transform rotate-[-5deg]">
+            <div className="bg-orange-400 text-white px-4 py-1 text-sm font-medium">Company Fact</div>
+          </div>
+          <h2 className="text-5xl font-bold text-gray-800 text-center">ACHIEVEMENTS</h2>
         </div>
-        <h2 className="text-5xl font-bold text-gray-800 text-center">ACHIEVEMENTS</h2>
-      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {achievements.map((achievement, index) => (
-          <Achievement
-            key={index}
-            value={achievement.value}
-            suffix={achievement.suffix}
-            label={achievement.label}
-            icon={achievement.icon}
-          />
-        ))}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {achievements.map((achievement, index) => (
+            <Achievement
+              key={index}
+              value={achievement.value}
+              suffix={achievement.suffix}
+              label={achievement.label}
+              icon={achievement.icon}
+            />
+          ))}
+        </div>
+
+      </section>
+
+      <div className="">
+        <AchievementsReview />
       </div>
-    </section>
+    </>
   )
 }
