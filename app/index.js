@@ -11,7 +11,7 @@ import visionIcon from "@/public/assets/images/vision-icon.png";
 import missionIcon from "@/public/assets/images/mission-icon.png";
 import valueIcon from "@/public/assets/images/value-icon.png";
 import Story from "@/public/assets/images/about/our-story.png";
-import Culture from "@/public/assets/images/about/our-culture.jpg";
+import Culture from "@/public/assets/images/about/our-culture.png";
 import team1 from "@/public/assets/images/team/01.jpeg"
 import team2 from "@/public/assets/images/team/02.jpeg"
 import youtubeThamnail from "@/public/assets/images/youtube-thamnail.jpg";
