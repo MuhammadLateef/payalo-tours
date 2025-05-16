@@ -71,7 +71,7 @@ export default function TourDetailPage({ params }) {
       </div>
       
       {/* Main Content */}
-      <section className="pt-20 pb-12">
+      <section className="pt-28 pb-12">
         <div className="mx-auto">
           <div className="grid grid-cols-1 px-0 lg:grid-cols-6 md:h-[50vh] h-auto">
             {/* Sidebar */}
@@ -106,7 +106,7 @@ export default function TourDetailPage({ params }) {
         
         <div className="max-w-7xl mx-auto md:mt-36 my-6">
           <div className="grid grid-cols-1 px-0 lg:grid-cols-6 h-auto">
-            <div className="lg:col-span-2">
+            <div className="lg:col-span-2 mr-14">
               <iframe 
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d209409.77386096024!2d75.39745195474264!3d35.32897875527903!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38e46392bac10283%3A0xc2f7a786f9833d7!2sSkardu!5e1!3m2!1sen!2s!4v1747156274096!5m2!1sen!2s" 
                 width="400" 

@@ -1,10 +1,7 @@
 import Timeline from '@/components/timeline';
 import {
-    Package1,
-    Package2,
-    Package3,
     Story,
-    Culture
+    
 } from "@/app/index";
 import Image from 'next/image';
 import FAQSection from '@/components/faq-section';
@@ -33,7 +30,7 @@ const AboutPage = () => {
                     {/* Image */}
                     <div>
                         <Image
-                            src={Culture}
+                            src={Story}
                             alt="Waterfall in Gilgit-Baltistan"
                             className=" w-full h-72 object-cover"
                             width={600}

@@ -1,4 +1,4 @@
-import { Package1, Package2, Package3, Package4, detailPin1, youtubeThamnail, Culture, Story } from "@/app/index";
+import { Package1, Package2, Package3, Package4, detailPin1, youtubeThamnail, Story } from "@/app/index";
 
 export const tours = [{
         id: "1",
@@ -197,7 +197,7 @@ export const tours = [{
         slug: "gilgit-baltistan-tour",
         image: Package3,
         coverImage: detailPin1,
-        featuredImage: Culture,
+        featuredImage: Package1,
         duration: "13 Day Trip to Gilgit-Baltistan",
         day: "13 Days",
         location: "Gilgit-Baltistan, Pakistan",
@@ -302,7 +302,7 @@ export const tours = [{
         slug: "k2-basecamp-trek",
         image: Package4,
         coverImage: detailPin1,
-        featuredImage: Culture,
+        featuredImage: Package1,
         duration: "20 Day Trek to K2/K2 Basecamp",
         day: "20 Days",
         location: "K2, Pakistan",
@@ -413,7 +413,7 @@ export const tours = [{
         slug: "hunza-valley-tour",
         image: "/placeholder.svg?height=600&width=400",
         coverImage: detailPin1,
-        featuredImage: Culture,
+        featuredImage: Package1,
         duration: "10 Day Trip to Hunza Valley",
         day: "10 Days",
         location: "Hunza Valley, Pakistan",
@@ -512,7 +512,7 @@ export const tours = [{
         slug: "fairy-meadows-trek",
         image: "/placeholder.svg?height=600&width=400",
         coverImage: detailPin1,
-        featuredImage: Culture,
+        featuredImage: Package1,
         duration: "5 Day Trek to Fairy Meadows",
         day: "05 Days",
         location: "Fairy Meadows, Pakistan",
