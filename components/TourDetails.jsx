@@ -37,7 +37,7 @@ export default function TourDetails({ tour }) {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-5xl bg-white">
+    <div className="container mx-auto px-4 py-8 max-w-7xl bg-white">
       {/* Tour Header */}
       <div className="bg-gradient-to-r from-emerald-600 to-blue-500 rounded-lg p-8 text-white mb-8 shadow-lg">
         <h1 className="text-3xl font-bold mb-2">{tourData.title}</h1>

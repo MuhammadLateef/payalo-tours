@@ -35,7 +35,7 @@ export default function TourDetailPage({ params }) {
   return (
     <main className="min-h-screen">
       {/* Hero Section */}
-      <div className="relative h-[100vh] w-full my-28 ">
+      <div className="relative h-[100vh] w-full my-20 ">
         <Image src={tourData.coverImage} alt={tourData.title} fill className="object-cover" priority />
         <div className="absolute inset-0 bg-black/40">
           <div className="container mx-auto h-full flex flex-col items-center justify-center p-8">

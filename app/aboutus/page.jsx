@@ -26,7 +26,7 @@ const AboutPage = () => {
                         <div>
                             <h4 className="text-md font-semibold text-gray-800 mb-1">Our Story</h4>
                             <p className="text-gray-600">
-                                Deep love for Gilgit-Baltistan’s natural splendor and rich culture gave rise to Payalo Adventures. Mazahir Hussain, our founder, was born and raised in this area and has a passion for showcasing the world’s hidden gems...
+                                Deep love for Gilgit-Baltistans natural splendor and rich culture gave rise to Payalo Adventures. Mazahir Hussain, our founder, was born and raised in this area and has a passion for showcasing the worlds hidden gems...
                             </p>
                         </div>
                     </div>
