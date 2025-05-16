@@ -74,11 +74,11 @@ const HeaderNav = () => {
             >
               <Link href="/" className="flex items-center">
                 <Image 
-                  src="/assets/images/mazahir_pics/logo.jpeg" 
+                  src="/assets/images/mazahir_pics/Nav_logo.png" 
                   alt="Adventure Logo" 
                   width={140} 
                   height={50} 
-                  className="h-10 w-auto" 
+                  className="h-16 w-auto" 
                 />
               </Link>
             </motion.div>
