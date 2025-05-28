@@ -2,6 +2,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import TravelFooter from "@/components/travel-footer";
 import HeaderNav from "@/components/Header";
+import { TourPopup } from "@/components/popup-tour";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,6 +28,7 @@ export default function RootLayout({ children }) {
         <HeaderNav />
         {children}
         <TravelFooter />
+        <TourPopup />
       </body>
     </html>
   );

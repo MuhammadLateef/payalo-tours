@@ -1,5 +1,5 @@
 "use client"
-import { useState } from "react"
+import { useState, use } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { notFound } from "next/navigation"
@@ -7,14 +7,20 @@ import { Play, MapPin, Star, Calendar, Check, X, ChevronDown, ChevronUp, FileTex
 import { tours } from "@/data/tours"
 import SocialLinks from "@/components/social-links"
 import TourDetails from "@/components/TourDetails"
-
+import { BookingForm } from "@/components/booking-form"
+import { featuredPackage } from "@/components/popup-tour"
 export default function TourDetailPage({ params }) {
-  const tour = tours.find((tour) => tour.slug === params.slug)
-  
+  const [showBookingForm, setShowBookingForm] = useState(false)
+  const [selectedPackage, setSelectedPackage] = useState(null)
+  const resolvedParams = use(params)
+  const tour = tours.find((tour) => tour.slug === resolvedParams.slug)
   if (!tour) {
     notFound()
   }
-
+  const handleBookNow = (packageId) => {
+    setSelectedPackage(packageId)
+    setShowBookingForm(true)
+  }
   // Ensure tour has all the necessary properties with defaults
   const tourData = {
     ...tour,
@@ -43,7 +49,7 @@ export default function TourDetailPage({ params }) {
             <p className="text-white text-lg max-w-3xl">{tourData.shortDescription}</p>
           </div>
         </div>
-        
+
         {/* Video Gallery */}
         {tourData.videos.length > 0 && (
           <section className="py-12 absolute -bottom-44 bg-white w-[70%] mx-auto left-0 right-0">
@@ -69,7 +75,7 @@ export default function TourDetailPage({ params }) {
           </section>
         )}
       </div>
-      
+
       {/* Main Content */}
       <section className="pt-28 pb-12">
         <div className="mx-auto">
@@ -80,12 +86,12 @@ export default function TourDetailPage({ params }) {
                 <div className="text-orange-500 uppercase text-base font-bold my-3">{tourData.day}</div>
                 <h2 className="text-4xl lg:text-5xl my-3 font-medium w-[85%] mx-auto leading-16 ">{tourData.title}</h2>
                 <div className="text-white my-3 text-sm font-medium mb-2 ">Tour</div>
-                <Link
-                  href="#"
+                <button               
+                  onClick={() => handleBookNow(featuredPackage.id)}
                   className="md:w-[40%] lg:w-[30%] w-auto my-4 mx-auto block text-center bg-emerald-500 hover:bg-[#F9A826] hover:text-white transition-all duration-300 transform text-white font-semibold py-3 px-4 uppercase"
                 >
                   Book Now
-                </Link>
+                </button>
                 <div className="my-3 flex justify-center gap-4">
                   <SocialLinks />
                 </div>
@@ -93,32 +99,32 @@ export default function TourDetailPage({ params }) {
             </div>
             <div className="lg:col-span-4">
               {/* Replace with a proper imported image */}
-              <Image 
-                width={800} 
-                height={600} 
-                src={tourData.featuredImage} 
-                className="object-cover h-[60vh] w-full" 
-                alt={tourData.title} 
+              <Image
+                width={800}
+                height={600}
+                src={tourData.featuredImage}
+                className="object-cover h-[60vh] w-full"
+                alt={tourData.title}
               />
             </div>
           </div>
         </div>
-        
+
         <div className="max-w-7xl mx-auto md:mt-36 my-6">
           <div className="grid grid-cols-1 px-0 lg:grid-cols-6 h-auto">
             <div className="lg:col-span-2 mr-14">
-              <iframe 
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d209409.77386096024!2d75.39745195474264!3d35.32897875527903!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38e46392bac10283%3A0xc2f7a786f9833d7!2sSkardu!5e1!3m2!1sen!2s!4v1747156274096!5m2!1sen!2s" 
-                width="400" 
-                height="450" 
-                className="mx-auto w-full" 
-                style={{ border: '0' }} 
-                allowFullScreen="" 
-                loading="lazy" 
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d209409.77386096024!2d75.39745195474264!3d35.32897875527903!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38e46392bac10283%3A0xc2f7a786f9833d7!2sSkardu!5e1!3m2!1sen!2s!4v1747156274096!5m2!1sen!2s"
+                width="400"
+                height="450"
+                className="mx-auto w-full"
+                style={{ border: '0' }}
+                allowFullScreen=""
+                loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
               />
             </div>
-            
+
             {/* Main Content */}
             <div className="lg:col-span-4 md:w-auto w-[80%] mx-auto">
               <div>
@@ -130,13 +136,25 @@ export default function TourDetailPage({ params }) {
               </div>
             </div>
           </div>
-          
+
           {/* Tour Details Component */}
           <div className="mt-16">
             <TourDetails tour={tourData} />
           </div>
         </div>
       </section>
+      {/* Booking Form */}
+      <BookingForm
+        isOpen={showBookingForm}
+        onClose={() => setShowBookingForm(false)}
+        packageDetails={{
+          title: featuredPackage.title,
+          price: featuredPackage.price,
+          days: featuredPackage.days,
+          nights: featuredPackage.nights,
+          minPersons: featuredPackage.minPersons,
+        }}
+      />
     </main>
   )
 }
