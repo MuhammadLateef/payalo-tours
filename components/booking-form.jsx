@@ -1,14 +1,6 @@
 "use client"
-import { useState } from "react"
-
-import { X, Calendar, Phone, User, MapPin, CreditCard, Check } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+import { useState } from "react";
+import { X, Calendar, Phone, User, MapPin, CreditCard, Check, Send } from "lucide-react";
 
 export function BookingForm({ isOpen, onClose, packageDetails }) {
   const [formData, setFormData] = useState({
@@ -25,15 +17,17 @@ export function BookingForm({ isOpen, onClose, packageDetails }) {
     medicalConditions: "",
     specialRequests: "",
     agreeToTerms: false,
-  })
+  });
 
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [showSuccess, setShowSuccess] = useState(false)
-  const [errors, setErrors] = useState({})
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [errors, setErrors] = useState({});
+
+  // WhatsApp number - you can change this to your business number
+  const WHATSAPP_NUMBER = "923554713444";
 
   const validateForm = () => {
     const newErrors = {}
-
     if (!formData.firstName.trim()) newErrors.firstName = "First name is required"
     if (!formData.lastName.trim()) newErrors.lastName = "Last name is required"
     if (!formData.email.trim()) newErrors.email = "Email is required"
@@ -50,170 +44,226 @@ export function BookingForm({ isOpen, onClose, packageDetails }) {
     return Object.keys(newErrors).length === 0
   }
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
+  const generateWhatsAppMessage = () => {
+    const totalPrice = packageDetails.price * Number.parseInt(formData.numberOfPersons);
+    const bookingRef = `#${Date.now().toString().slice(-6)}`;
+    
+    let message = `🏔️ *TOUR BOOKING REQUEST* 🏔️\n\n`;
+    message += `*Package Details:*\n`;
+    message += `📦 Package: ${packageDetails.title}\n`;
+    message += `⏱️ Duration: ${packageDetails.days} days / ${packageDetails.nights} nights\n`;
+    message += `💰 Price per person: ${packageDetails.price}\n`;
+    message += `👥 Number of persons: ${formData.numberOfPersons}\n`;
+    message += `💵 Total Price: *${totalPrice}*\n`;
+    message += `📅 Preferred Date: ${formData.preferredDate}\n`;
+    message += `🆔 Booking Reference: ${bookingRef}\n\n`;
+    
+    message += `*Personal Information:*\n`;
+    message += `👤 Name: ${formData.firstName} ${formData.lastName}\n`;
+    message += `📧 Email: ${formData.email}\n`;
+    message += `📱 Phone: ${formData.phone}\n`;
+    message += `🌍 Country: ${formData.country}\n\n`;
+    
+    message += `*Emergency Contact:*\n`;
+    message += `👤 Name: ${formData.emergencyContact}\n`;
+    message += `📱 Phone: ${formData.emergencyPhone}\n\n`;
+    
+    if (formData.dietaryRequirements.trim()) {
+      message += `*Dietary Requirements:*\n${formData.dietaryRequirements}\n\n`;
+    }
+    
+    if (formData.medicalConditions.trim()) {
+      message += `*Medical Conditions:*\n${formData.medicalConditions}\n\n`;
+    }
+    
+    if (formData.specialRequests.trim()) {
+      message += `*Special Requests:*\n${formData.specialRequests}\n\n`;
+    }
+    
+    message += `📋 *Please confirm availability and provide further booking details.*\n\n`;
+    message += `Thank you! 🙏`;
+    
+    console.log("Generated message:", message); // Debug log
+    return encodeURIComponent(message);
+  };
 
-    if (!validateForm()) return
+  const handleSubmit = (e) => {
+    e?.preventDefault();
 
-    setIsSubmitting(true)
+    console.log("Form submitted!", formData); // Debug log
+
+    if (!validateForm()) {
+      console.log("Validation failed:", errors);
+      return;
+    }
+
+    setIsSubmitting(true);
 
     try {
-      // Calculate total price
-      const totalPrice = packageDetails.price * Number.parseInt(formData.numberOfPersons)
+      // Generate WhatsApp message
+      const whatsappMessage = generateWhatsAppMessage();
+      const whatsappURL = `https://wa.me/${WHATSAPP_NUMBER}?text=${whatsappMessage}`;
+      
+      console.log("WhatsApp URL:", whatsappURL); // Debug log
+      
+      // Show success message first
+      setShowSuccess(true);
+      
+      // Open WhatsApp immediately and also after a short delay for reliability
+      window.open(whatsappURL, '_blank', 'noopener,noreferrer');
+      
+      setTimeout(() => {
+        window.open(whatsappURL, '_blank', 'noopener,noreferrer');
+      }, 500);
 
-      // Prepare email data
-      const emailData = {
-        to: formData.email,
-        subject: `Booking Confirmation - ${packageDetails.title}`,
-        bookingDetails: {
-          ...formData,
-          packageTitle: packageDetails.title,
-          packagePrice: packageDetails.price,
-          totalPrice,
-          packageDays: packageDetails.days,
-          packageNights: packageDetails.nights,
-          submissionDate: new Date().toISOString(),
-        },
-      }
+      // Reset form after successful submission
+      setTimeout(() => {
+        setFormData({
+          firstName: "",
+          lastName: "",
+          email: "",
+          phone: "",
+          country: "",
+          numberOfPersons: "",
+          preferredDate: "",
+          emergencyContact: "",
+          emergencyPhone: "",
+          dietaryRequirements: "",
+          medicalConditions: "",
+          specialRequests: "",
+          agreeToTerms: false,
+        });
+        setShowSuccess(false);
+        onClose();
+      }, 4000);
 
-      // Send email (this would typically be an API call)
-      const response = await fetch("/api/send-booking-email", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(emailData),
-      })
-
-      if (response.ok) {
-        setShowSuccess(true)
-        // Reset form after successful submission
-        setTimeout(() => {
-          setFormData({
-            firstName: "",
-            lastName: "",
-            email: "",
-            phone: "",
-            country: "",
-            numberOfPersons: "",
-            preferredDate: "",
-            emergencyContact: "",
-            emergencyPhone: "",
-            dietaryRequirements: "",
-            medicalConditions: "",
-            specialRequests: "",
-            agreeToTerms: false,
-          })
-          setShowSuccess(false)
-          onClose()
-        }, 3000)
-      } else {
-        throw new Error("Failed to send booking confirmation")
-      }
     } catch (error) {
-      console.error("Error submitting booking:", error)
-      alert("There was an error submitting your booking. Please try again.")
+      console.error("Error processing booking:", error);
+      alert("There was an error processing your booking. Please try again.");
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   const handleInputChange = (field, value) => {
-    setFormData((prev) => ({ ...prev, [field]: value }))
+    setFormData((prev) => ({ ...prev, [field]: value }));
     // Clear error when user starts typing
     if (errors[field]) {
-      setErrors((prev) => ({ ...prev, [field]: undefined }))
+      setErrors((prev) => ({ ...prev, [field]: undefined }));
     }
-  }
+  };
 
-  const totalPrice = formData.numberOfPersons ? packageDetails.price * Number.parseInt(formData.numberOfPersons) : 0
+  const totalPrice = formData.numberOfPersons ? packageDetails.price * Number.parseInt(formData.numberOfPersons) : 0;
 
-  if (!isOpen) return null
+  if (!isOpen) return null;
 
   if (showSuccess) {
+    const whatsappMessage = generateWhatsAppMessage();
+    const whatsappURL = `https://wa.me/${WHATSAPP_NUMBER}?text=${whatsappMessage}`;
+    
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-in fade-in duration-300 p-4">
-        <Card className="w-full max-w-md animate-in zoom-in-95 duration-500">
-          <CardContent className="p-8 text-center">
-            <div className="mb-4">
-              <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
-                <Check className="w-8 h-8 text-green-600" />
-              </div>
-              <h3 className="text-2xl font-bold text-green-600 mb-2">Booking Confirmed!</h3>
-              <p className="text-muted-foreground mb-4">
-                Thank you for your booking request. We've sent a confirmation email to{" "}
-                <span className="font-semibold">{formData.email}</span>
-              </p>
-              <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
-                <p className="text-sm text-green-800">
-                  <strong>What's next?</strong>
-                  <br />
-                  Our travel experts will contact you within 24 hours to finalize your booking and arrange payment.
-                </p>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                Booking Reference: <span className="font-mono font-semibold">#{Date.now().toString().slice(-6)}</span>
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+        <div className="w-full max-w-md bg-white rounded-lg shadow-xl p-8 text-center">
+          <div className="mb-4">
+            <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
+              <Check className="w-8 h-8 text-green-600" />
+            </div>
+            <h3 className="text-2xl font-bold text-green-600 mb-2">Booking Request Ready!</h3>
+            <p className="text-gray-600 mb-4">
+              Your booking details have been prepared successfully.
+            </p>
+            <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
+              <p className="text-sm text-green-800">
+                <strong>Next Step:</strong>
+                <br />
+                Click the button below to send your booking request via WhatsApp.
               </p>
             </div>
-          </CardContent>
-        </Card>
+            
+            <div className="space-y-3">
+              <a
+                href={whatsappURL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg font-semibold transition-colors duration-200"
+              >
+                <Send className="inline-block w-4 h-4 mr-2" />
+                Send via WhatsApp
+              </a>
+              
+              <button
+                onClick={() => {
+                  setShowSuccess(false);
+                  onClose();
+                }}
+                className="block w-full text-gray-500 hover:text-gray-700 py-2"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
-    )
+    );
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-in fade-in duration-300 p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
       <div className="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-        <Card className="animate-in slide-in-from-bottom-4 duration-500">
-          <CardHeader className="relative">
-            <Button
-              variant="ghost"
-              size="icon"
+        <div className="bg-white rounded-lg shadow-xl">
+          <div className="relative p-6 border-b">
+            <button
               onClick={onClose}
-              className="absolute right-2 top-2 h-8 w-8 rounded-full"
+              className="absolute right-4 top-4 p-2 hover:bg-gray-100 rounded-full transition-colors"
             >
-              <X className="h-4 w-4" />
-            </Button>
-            <CardTitle className="text-2xl">Book Your Adventure</CardTitle>
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Badge variant="secondary">{packageDetails.title}</Badge>
+              <X className="h-5 w-5" />
+            </button>
+            <h2 className="text-2xl font-bold">Book Your Adventure</h2>
+            <div className="flex items-center gap-2 text-sm text-gray-600 mt-2">
+              <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-md text-xs font-medium">
+                {packageDetails.title}
+              </span>
               <span>•</span>
               <span>
                 {packageDetails.days} days / {packageDetails.nights} nights
               </span>
             </div>
-          </CardHeader>
+          </div>
 
-          <CardContent className="space-y-6">
-            <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="p-6 space-y-6">
+            <div className="space-y-6">
               {/* Personal Information */}
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold flex items-center gap-2">
+                <h3 className="text-lg font-semibold flex items-center gap-2 text-gray-800">
                   <User className="h-5 w-5" />
                   Personal Information
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="firstName">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
                       First Name <span className="text-red-500">*</span>
-                    </Label>
-                    <Input
-                      id="firstName"
+                    </label>
+                    <input
+                      type="text"
                       value={formData.firstName}
                       onChange={(e) => handleInputChange("firstName", e.target.value)}
-                      className={errors.firstName ? "border-red-500" : ""}
+                      className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                        errors.firstName ? "border-red-500" : "border-gray-300"
+                      }`}
                     />
                     {errors.firstName && <p className="text-sm text-red-500 mt-1">{errors.firstName}</p>}
                   </div>
                   <div>
-                    <Label htmlFor="lastName">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
                       Last Name <span className="text-red-500">*</span>
-                    </Label>
-                    <Input
-                      id="lastName"
+                    </label>
+                    <input
+                      type="text"
                       value={formData.lastName}
                       onChange={(e) => handleInputChange("lastName", e.target.value)}
-                      className={errors.lastName ? "border-red-500" : ""}
+                      className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                        errors.lastName ? "border-red-500" : "border-gray-300"
+                      }`}
                     />
                     {errors.lastName && <p className="text-sm text-red-500 mt-1">{errors.lastName}</p>}
                   </div>
@@ -221,42 +271,46 @@ export function BookingForm({ isOpen, onClose, packageDetails }) {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="email">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
                       Email Address <span className="text-red-500">*</span>
-                    </Label>
-                    <Input
-                      id="email"
+                    </label>
+                    <input
                       type="email"
                       value={formData.email}
                       onChange={(e) => handleInputChange("email", e.target.value)}
-                      className={errors.email ? "border-red-500" : ""}
+                      className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                        errors.email ? "border-red-500" : "border-gray-300"
+                      }`}
                     />
                     {errors.email && <p className="text-sm text-red-500 mt-1">{errors.email}</p>}
                   </div>
                   <div>
-                    <Label htmlFor="phone">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
                       Phone Number <span className="text-red-500">*</span>
-                    </Label>
-                    <Input
-                      id="phone"
+                    </label>
+                    <input
                       type="tel"
                       value={formData.phone}
                       onChange={(e) => handleInputChange("phone", e.target.value)}
-                      className={errors.phone ? "border-red-500" : ""}
+                      className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                        errors.phone ? "border-red-500" : "border-gray-300"
+                      }`}
                     />
                     {errors.phone && <p className="text-sm text-red-500 mt-1">{errors.phone}</p>}
                   </div>
                 </div>
 
                 <div>
-                  <Label htmlFor="country">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
                     Country <span className="text-red-500">*</span>
-                  </Label>
-                  <Input
-                    id="country"
+                  </label>
+                  <input
+                    type="text"
                     value={formData.country}
                     onChange={(e) => handleInputChange("country", e.target.value)}
-                    className={errors.country ? "border-red-500" : ""}
+                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                      errors.country ? "border-red-500" : "border-gray-300"
+                    }`}
                   />
                   {errors.country && <p className="text-sm text-red-500 mt-1">{errors.country}</p>}
                 </div>
@@ -264,43 +318,43 @@ export function BookingForm({ isOpen, onClose, packageDetails }) {
 
               {/* Trip Details */}
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold flex items-center gap-2">
+                <h3 className="text-lg font-semibold flex items-center gap-2 text-gray-800">
                   <Calendar className="h-5 w-5" />
                   Trip Details
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="numberOfPersons">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
                       Number of Persons <span className="text-red-500">*</span>
-                    </Label>
-                    <Select
+                    </label>
+                    <select
                       value={formData.numberOfPersons}
-                      onValueChange={(value) => handleInputChange("numberOfPersons", value)}
+                      onChange={(e) => handleInputChange("numberOfPersons", e.target.value)}
+                      className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                        errors.numberOfPersons ? "border-red-500" : "border-gray-300"
+                      }`}
                     >
-                      <SelectTrigger className={errors.numberOfPersons ? "border-red-500" : ""}>
-                        <SelectValue placeholder="Select number of persons" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {Array.from({ length: 10 }, (_, i) => i + 1).map((num) => (
-                          <SelectItem key={num} value={num.toString()}>
-                            {num} {num === 1 ? "Person" : "Persons"}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                      <option value="">Select number of persons</option>
+                      {Array.from({ length: 10 }, (_, i) => i + 1).map((num) => (
+                        <option key={num} value={num.toString()}>
+                          {num} {num === 1 ? "Person" : "Persons"}
+                        </option>
+                      ))}
+                    </select>
                     {errors.numberOfPersons && <p className="text-sm text-red-500 mt-1">{errors.numberOfPersons}</p>}
                   </div>
                   <div>
-                    <Label htmlFor="preferredDate">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
                       Preferred Start Date <span className="text-red-500">*</span>
-                    </Label>
-                    <Input
-                      id="preferredDate"
+                    </label>
+                    <input
                       type="date"
                       value={formData.preferredDate}
                       onChange={(e) => handleInputChange("preferredDate", e.target.value)}
                       min={new Date().toISOString().split("T")[0]}
-                      className={errors.preferredDate ? "border-red-500" : ""}
+                      className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                        errors.preferredDate ? "border-red-500" : "border-gray-300"
+                      }`}
                     />
                     {errors.preferredDate && <p className="text-sm text-red-500 mt-1">{errors.preferredDate}</p>}
                   </div>
@@ -309,33 +363,36 @@ export function BookingForm({ isOpen, onClose, packageDetails }) {
 
               {/* Emergency Contact */}
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold flex items-center gap-2">
+                <h3 className="text-lg font-semibold flex items-center gap-2 text-gray-800">
                   <Phone className="h-5 w-5" />
                   Emergency Contact
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="emergencyContact">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
                       Emergency Contact Name <span className="text-red-500">*</span>
-                    </Label>
-                    <Input
-                      id="emergencyContact"
+                    </label>
+                    <input
+                      type="text"
                       value={formData.emergencyContact}
                       onChange={(e) => handleInputChange("emergencyContact", e.target.value)}
-                      className={errors.emergencyContact ? "border-red-500" : ""}
+                      className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                        errors.emergencyContact ? "border-red-500" : "border-gray-300"
+                      }`}
                     />
                     {errors.emergencyContact && <p className="text-sm text-red-500 mt-1">{errors.emergencyContact}</p>}
                   </div>
                   <div>
-                    <Label htmlFor="emergencyPhone">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
                       Emergency Contact Phone <span className="text-red-500">*</span>
-                    </Label>
-                    <Input
-                      id="emergencyPhone"
+                    </label>
+                    <input
                       type="tel"
                       value={formData.emergencyPhone}
                       onChange={(e) => handleInputChange("emergencyPhone", e.target.value)}
-                      className={errors.emergencyPhone ? "border-red-500" : ""}
+                      className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                        errors.emergencyPhone ? "border-red-500" : "border-gray-300"
+                      }`}
                     />
                     {errors.emergencyPhone && <p className="text-sm text-red-500 mt-1">{errors.emergencyPhone}</p>}
                   </div>
@@ -344,46 +401,46 @@ export function BookingForm({ isOpen, onClose, packageDetails }) {
 
               {/* Additional Information */}
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold flex items-center gap-2">
+                <h3 className="text-lg font-semibold flex items-center gap-2 text-gray-800">
                   <MapPin className="h-5 w-5" />
                   Additional Information
                 </h3>
                 <div>
-                  <Label htmlFor="dietaryRequirements">Dietary Requirements</Label>
-                  <Textarea
-                    id="dietaryRequirements"
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Dietary Requirements</label>
+                  <textarea
                     value={formData.dietaryRequirements}
                     onChange={(e) => handleInputChange("dietaryRequirements", e.target.value)}
                     placeholder="Please specify any dietary restrictions or allergies"
                     rows={2}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
                 <div>
-                  <Label htmlFor="medicalConditions">Medical Conditions</Label>
-                  <Textarea
-                    id="medicalConditions"
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Medical Conditions</label>
+                  <textarea
                     value={formData.medicalConditions}
                     onChange={(e) => handleInputChange("medicalConditions", e.target.value)}
                     placeholder="Please specify any medical conditions we should be aware of"
                     rows={2}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
                 <div>
-                  <Label htmlFor="specialRequests">Special Requests</Label>
-                  <Textarea
-                    id="specialRequests"
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Special Requests</label>
+                  <textarea
                     value={formData.specialRequests}
                     onChange={(e) => handleInputChange("specialRequests", e.target.value)}
                     placeholder="Any special requests or additional information"
                     rows={2}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
               </div>
 
               {/* Price Summary */}
               {totalPrice > 0 && (
-                <div className="bg-muted p-4 rounded-lg">
-                  <h3 className="text-lg font-semibold flex items-center gap-2 mb-2">
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <h3 className="text-lg font-semibold flex items-center gap-2 mb-2 text-gray-800">
                     <CreditCard className="h-5 w-5" />
                     Price Summary
                   </h3>
@@ -400,7 +457,7 @@ export function BookingForm({ isOpen, onClose, packageDetails }) {
                       <span>Total Price:</span>
                       <span className="text-green-600">${totalPrice}</span>
                     </div>
-                    <p className="text-xs text-muted-foreground mt-2">
+                    <p className="text-xs text-gray-500 mt-2">
                       * Final price may vary based on specific requirements and group discounts
                     </p>
                   </div>
@@ -416,33 +473,44 @@ export function BookingForm({ isOpen, onClose, packageDetails }) {
                   onChange={(e) => handleInputChange("agreeToTerms", e.target.checked)}
                   className="mt-1"
                 />
-                <Label htmlFor="agreeToTerms" className="text-sm">
+                <label htmlFor="agreeToTerms" className="text-sm text-gray-700">
                   I agree to the{" "}
-                  <a href="#" className="text-primary underline">
+                  <a href="#" className="text-blue-600 underline">
                     Terms and Conditions
                   </a>{" "}
                   and{" "}
-                  <a href="#" className="text-primary underline">
+                  <a href="#" className="text-blue-600 underline">
                     Privacy Policy
                   </a>{" "}
                   <span className="text-red-500">*</span>
-                </Label>
+                </label>
               </div>
               {errors.agreeToTerms && <p className="text-sm text-red-500">{errors.agreeToTerms}</p>}
 
               {/* Submit Button */}
-              <Button type="submit" className="w-full" size="lg" disabled={isSubmitting}>
-                {isSubmitting ? "Submitting..." : "Submit Booking Request"}
-              </Button>
+              <button
+                type="button"
+                onClick={handleSubmit}
+                disabled={isSubmitting}
+                className="w-full bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white py-3 px-4 rounded-lg font-semibold transition-colors duration-200 flex items-center justify-center gap-2"
+              >
+                {isSubmitting ? (
+                  "Processing..."
+                ) : (
+                  <>
+                    <Send className="w-4 h-4" />
+                    Book via WhatsApp
+                  </>
+                )}
+              </button>
 
-              <p className="text-xs text-muted-foreground text-center">
-                By submitting this form, you're requesting a booking. Our team will contact you to confirm availability
-                and arrange payment.
+              <p className="text-xs text-gray-500 text-center">
+                By submitting this form, your booking details will be sent via WhatsApp to our team for confirmation.
               </p>
-            </form>
-          </CardContent>
-        </Card>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-  )
+  );
 }
