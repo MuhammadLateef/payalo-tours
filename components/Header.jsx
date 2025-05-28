@@ -135,12 +135,12 @@ const HeaderNav = () => {
                   <NavigationMenuItem>
                     <NavigationMenuTrigger>About us</NavigationMenuTrigger>
                     <NavigationMenuContent>
-                      <ul className="grid w-[250px] gap-3 p-2 md:w-[100px] md:grid-cols-2 lg:w-[200px]">
+                      <ul className="grid w-[300px] gap-3 p-2 md:w-[300px] md:grid-cols-2 lg:w-[300px]">
                         <li className="row-span-2">
                           <NavigationMenuLink className={"space-y-3"}>
                             <Link
                               href={`/aboutus`}
-                              className="font-medium"
+                              className="font-medium uppercase w-full"
                             >
                               About us
                             </Link>
@@ -148,7 +148,7 @@ const HeaderNav = () => {
                           <NavigationMenuLink>
                             <Link
                               href={`/team`}
-                              className="font-medium"
+                              className="font-medium uppercase w-full"
                             >
                               Our Team
                             </Link>
@@ -156,7 +156,7 @@ const HeaderNav = () => {
                           <NavigationMenuLink>
                             <Link
                               href={`/contactus`}
-                              className="font-medium"
+                              className="font-medium uppercase w-full"
                             >
                               Contact us
                             </Link>
@@ -235,7 +235,7 @@ const HeaderNav = () => {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
-              className="md:hidden bg-white/95"
+              className="md:hidden bg-black/95"
             >
               <div className="px-4 pt-2 pb-4 space-y-1">
                 <MobileNavLink href="/" label="HOME" active />
@@ -275,7 +275,7 @@ const HeaderNav = () => {
                   toggleDropdown={() => toggleDropdown('mobile-aboutus')}
                   links={[
                     { href: '/team', label: 'Our Team' },
-                    { href: '/contact-us', label: 'Contact Us' },
+                    { href: '/contactus', label: 'Contact Us' },
                   ]}
                 />
 
