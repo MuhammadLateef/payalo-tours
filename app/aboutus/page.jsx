@@ -1,15 +1,16 @@
+import Image from 'next/image';
 import Timeline from '@/components/timeline';
 import {
-    Story,
+    Story1,
+    hunzaValley
     
 } from "@/app/index";
-import Image from 'next/image';
 import FAQSection from '@/components/faq-section';
 const AboutPage = () => {
     return (
         <div>
             <div className="bg-white px-4 py-12 sm:px-8 md:px-16 lg:px-24 space-y-20">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center mt-20">
                     <div className="space-y-6">
                         <div>
                             <h2 className="text-sm text-orange-500 font-semibold mb-1">About Payalo Adventures</h2>
@@ -30,7 +31,7 @@ const AboutPage = () => {
                     {/* Image */}
                     <div>
                         <Image
-                            src={Story}
+                            src={Story1}
                             alt="Waterfall in Gilgit-Baltistan"
                             className=" w-full h-72 object-cover"
                             width={600}
@@ -44,7 +45,7 @@ const AboutPage = () => {
                     {/* Image */}
                     <div>
                         <Image
-                            src={Story}
+                            src={hunzaValley}
                             alt="Valley in Gilgit-Baltistan"
                             className=" w-full h-72 object-cover"
                             width={600}

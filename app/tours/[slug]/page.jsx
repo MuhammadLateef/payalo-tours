@@ -96,7 +96,7 @@ export default function TourDetailPage({ params }) {
               <Image 
                 width={800} 
                 height={600} 
-                src={tourData.featuredImage || "/placeholder.svg"} 
+                src={tourData.featuredImage} 
                 className="object-cover h-[60vh] w-full" 
                 alt={tourData.title} 
               />

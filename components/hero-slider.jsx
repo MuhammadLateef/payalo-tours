@@ -74,7 +74,7 @@ export default function HomePage() {
               transition={{ duration: 0.8, delay: 0.8 }}
               className="mt-8"
             >
-              <a href="#contact">
+              <a target="_blank" href="https://wa.me/923554229889?text">
                 <button className="hover:cursor-pointer px-8 py-3 border border-green-500 text-white bg-green-500 rounded-md hover:bg-green-600 transition-colors duration-300 shadow-lg hover:shadow-green-500/20">
                   Call Now
                 </button>

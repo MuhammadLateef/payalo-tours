@@ -1,7 +1,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import { MapPin, Mail, Phone, Facebook, Instagram, Send } from "lucide-react"
-import Image1 from "/public/assets/images/home/contact-img.jpg"
+import {Contactus} from "@/app/index"
 
 export default function ContactUs() {
     return (
@@ -9,13 +9,13 @@ export default function ContactUs() {
             {/* Hero Section with Improved Overlay */}
             <div className="relative h-[400px] w-full">
                 <Image
-                    src={Image1}
+                    src={Contactus}
                     alt="Mountain landscape"
                     fill
                     className="object-cover h-[80vh] brightness-75"
                     priority
                 />
-                <div className="absolute inset-0 flex flex-col items-center justify-center text-white bg-black bg-opacity-30">
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-white bg-opacity-20">
                     <h1 className="text-4xl font-bold mb-2 transform transition-transform duration-500 hover:scale-105">Contact Us</h1>
                     <div className="flex items-center gap-2">
                         <a href="/" className="hover:text-[#F9A826] transition-colors duration-300 ease-in-out">
